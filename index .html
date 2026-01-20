@@ -3,256 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আমিরুল ম্যাথ কেয়ার - প্রো ম্যানেজমেন্ট</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>স্মার্ট প্রশ্ন ব্যাংক - আল্টিমেট এডিশন</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                enableMenu: false
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
-        .hidden { display: none; }
-        .hero-section {
-            background-image: url('https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; background-position: center; height: 35vh;
-            display: flex; align-items: center; justify-content: center;
-            color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); position: relative;
+        :root { 
+            --primary: #6366f1; --success: #10b981; --danger: #ef4444; --bg: #f3f4f6;
         }
-        .hero-section::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4); z-index: 1;
-        }
-        .hero-content { z-index: 2; text-align: center; }
+        
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; }
+        
+        .header { background: #fff; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; }
+        .nav-tabs button { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; background: #e5e7eb; }
+        .nav-tabs button.active { background: var(--primary); color: white; }
+
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; transition: 0.3s; box-sizing: border-box; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; }
+
+        .preview-box { background: #f9fafb; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 15px; margin: 15px 0; min-height: 40px; overflow-x: auto; }
+
+        .q-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; gap: 15px; border-left: 5px solid var(--primary); transition: 0.3s; position: relative; }
+        .q-card:hover { transform: scale(1.01); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .badge { font-size: 12px; padding: 4px 10px; border-radius: 6px; background: #f3f4f6; font-weight: 600; margin-right: 5px; }
+        .badge-type { background: #fee2e2; color: #b91c1c; }
+
+        .footer-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 15px 30px; border-radius: 50px; display: flex; gap: 20px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1000; }
+        .btn-action { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+
+        .btn-edit { color: var(--primary); cursor: pointer; margin-right: 10px; }
+        .btn-delete { color: var(--danger); cursor: pointer; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <nav class="bg-indigo-900 p-4 text-white flex justify-between items-center shadow-lg">
-        <h1 class="text-xl font-bold">আমিরুল ম্যাথ কেয়ার</h1>
-        <div class="space-x-4">
-            <button onclick="showSection('studentView')" class="hover:underline">রেজাল্ট দেখুন</button>
-            <button onclick="showSection('loginSection')" class="bg-white text-indigo-900 px-3 py-1 rounded font-bold">অ্যাডমিন</button>
-        </div>
-    </nav>
-
-    <div class="hero-section">
-        <div class="hero-content">
-            <h2 class="text-4xl font-extrabold mb-1">আমিরুল ম্যাথ কেয়ার</h2>
-            <p class="text-yellow-300 font-bold">নির্ভুল ডাটাবেস ও স্মার্ট রেজাল্ট ম্যানেজমেন্ট</p>
-        </div>
+<div class="header">
+    <div class="nav-tabs">
+        <button id="adminBtn" class="active" onclick="showTab('admin')">⚙️ প্রশ্ন তৈরি</button>
+        <button id="userBtn" onclick="showTab('user')">📚 প্রশ্ন ব্যাংক</button>
     </div>
+</div>
 
-    <div id="studentView" class="container mx-auto mt-10 p-6 max-w-md">
-        <div class="bg-white p-8 rounded shadow-lg border-t-4 border-indigo-600">
-            <h2 class="text-2xl font-bold text-center mb-6 text-indigo-800">ফলাফল চেক করুন</h2>
-            <div class="space-y-4">
-                <select id="searchClass" class="w-full p-3 border rounded outline-none">
-                    <option value="">শ্রেণী নির্বাচন করুন</option>
-                    <option value="৬ষ্ঠ">৬ষ্ঠ শ্রেণী</option>
-                    <option value="৭ম">৭ম শ্রেণী</option>
-                    <option value="৮ম">৮ম শ্রেণী</option>
-                    <option value="৯ম">৯ম শ্রেণী</option>
-                    <option value="১০ম">১০ম শ্রেণী</option>
-                </select>
-                <input type="text" id="searchRoll" placeholder="রোল নম্বর দাও" class="w-full p-3 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
-                <button onclick="checkResult()" class="w-full bg-indigo-600 text-white py-2 rounded font-bold hover:bg-indigo-800 transition">রেজাল্ট দেখুন</button>
+<div class="container">
+    <div id="adminTab">
+        <div class="card">
+            <h2 id="title">📝 নতুন প্রশ্ন যোগ করুন</h2>
+            <input type="hidden" id="editId">
+            
+            <div class="grid-3">
+                <div>
+                    <label>শ্রেণী</label>
+                    <input type="text" id="classInput" list="classList" placeholder="উদা: ১০ম">
+                    <datalist id="classList"></datalist>
+                </div>
+                <div>
+                    <label>বিষয়</label>
+                    <input type="text" id="subjectInput" list="subjectList" placeholder="উদা: গণিত">
+                    <datalist id="subjectList"></datalist>
+                </div>
+                <div>
+                    <label>প্রশ্নের ধরন</label>
+                    <select id="qType">
+                        <option value="সৃজনশীল">সৃজনশীল</option>
+                        <option value="সংক্ষিপ্ত">সংক্ষিপ্ত</option>
+                        <option value="এমসিকিউ">এমসিকিউ</option>
+                    </select>
+                </div>
             </div>
-            <div id="resultDisplay" class="mt-6 p-4 border rounded bg-gray-50 hidden"></div>
-        </div>
-    </div>
 
-    <div id="loginSection" class="container mx-auto mt-10 p-6 max-w-md hidden">
-        <div class="bg-white p-8 rounded shadow-lg text-center">
-            <h2 class="text-xl font-bold mb-4">অ্যাডমিন লগইন</h2>
-            <input type="password" id="adminPass" placeholder="পাসওয়ার্ড (1234)" class="w-full p-3 border rounded mb-4 text-center outline-none">
-            <button onclick="adminLogin()" class="w-full bg-indigo-600 text-white py-2 rounded font-bold">লগইন</button>
-        </div>
-    </div>
+            <textarea id="mainInput" rows="4" placeholder="প্রশ্ন লিখুন (ম্যাথের জন্য $x^2$ ব্যবহার করুন)..." onkeyup="doPreview()"></textarea>
+            
+            <div class="preview-box" id="livePreview">প্রিভিউ এখানে দেখা যাবে...</div>
 
-    <div id="adminPanel" class="container mx-auto mt-6 p-4 hidden">
-        <div class="bg-white p-6 rounded shadow mb-6">
-            <h2 id="formTitle" class="text-xl font-bold text-indigo-800 border-b pb-2 mb-4">নতুন ছাত্রছাত্রী যোগ করুন</h2>
-            <input type="hidden" id="editIndex" value="-1">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <input type="text" id="stdName" placeholder="নাম" class="p-2 border rounded">
-                <input type="text" id="stdRoll" placeholder="রোল নম্বর" class="p-2 border rounded">
-                <select id="stdClass" class="p-2 border rounded">
-                    <option value="৬ষ্ঠ">৬ষ্ঠ শ্রেণী</option>
-                    <option value="৭ম">৭ম শ্রেণী</option>
-                    <option value="৮ম">৮ম শ্রেণী</option>
-                    <option value="৯ম">৯ম শ্রেণী</option>
-                    <option value="১০ম">১০ম শ্রেণী</option>
-                </select>
-                <input type="text" id="stdBatch" placeholder="ব্যাচ" class="p-2 border rounded">
-                <input type="text" id="stdPhone" placeholder="মোবাইল (017...)" class="p-2 border rounded">
-                <input type="text" id="stdResult" placeholder="রেজাল্ট (GPA/Mark)" class="p-2 border rounded">
-                <button id="saveBtn" onclick="saveStudent()" class="bg-indigo-600 text-white p-2 rounded font-bold hover:bg-indigo-700">সেভ করুন</button>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <input type="number" id="marks" placeholder="নম্বর" style="width: 100px;">
+                <button onclick="saveData()" id="saveBtn" class="btn-action" style="background: var(--primary); flex: 1;">💾 ডাটা সেভ করুন</button>
+                <button onclick="resetForm()" class="btn-action" style="background: #6b7280;">🔄 রিসেট</button>
             </div>
-            <button id="cancelEdit" onclick="resetForm()" class="mt-2 text-sm text-red-500 hidden underline">এডিট বাতিল</button>
-        </div>
-
-        <div class="bg-indigo-50 p-4 rounded shadow mb-6 border-l-4 border-indigo-600">
-            <h3 class="font-bold text-indigo-800 mb-2"><i class="fas fa-bullhorn"></i> Bulk SMS নোটিশ:</h3>
-            <textarea id="noticeMsg" placeholder="এখানে নোটিশ লিখুন যা SMS বাটনে ক্লিক করলে ছাত্রের WhatsApp এ চলে যাবে..." class="w-full p-2 border rounded outline-none h-16"></textarea>
-        </div>
-
-        <div class="flex space-x-2 mb-4 overflow-x-auto pb-2">
-            <button onclick="filterClass('All')" class="bg-gray-800 text-white px-4 py-2 rounded shrink-0">সবাই</button>
-            <button onclick="filterClass('৬ষ্ঠ')" class="bg-indigo-500 text-white px-4 py-2 rounded shrink-0">৬ষ্ঠ</button>
-            <button onclick="filterClass('৭ম')" class="bg-indigo-500 text-white px-4 py-2 rounded shrink-0">৭ম</button>
-            <button onclick="filterClass('৮ম')" class="bg-indigo-500 text-white px-4 py-2 rounded shrink-0">৮ম</button>
-            <button onclick="filterClass('৯ম')" class="bg-indigo-500 text-white px-4 py-2 rounded shrink-0">৯ম</button>
-            <button onclick="filterClass('১০ম')" class="bg-indigo-500 text-white px-4 py-2 rounded shrink-0">১০ম</button>
-        </div>
-
-        <div class="bg-white shadow rounded overflow-x-auto">
-            <table class="min-w-full">
-                <thead class="bg-indigo-900 text-white">
-                    <tr>
-                        <th class="p-3 text-left">রোল</th>
-                        <th class="p-3 text-left">নাম</th>
-                        <th class="p-3 text-left">শ্রেণী</th>
-                        <th class="p-3 text-left">রেজাল্ট</th>
-                        <th class="p-3 text-center">অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody"></tbody>
-            </table>
         </div>
     </div>
 
-    <script>
-        let currentFilter = 'All';
+    <div id="userTab" style="display:none">
+        <div class="card" style="display: flex; gap: 10px; align-items: center;">
+            🔍 ফিল্টার: 
+            <select id="filterClass" onchange="renderQuestions()"><option value="">সকল শ্রেণী</option></select>
+            <select id="filterType" onchange="renderQuestions()">
+                <option value="">সকল ধরন</option>
+                <option value="সৃজনশীল">সৃজনশীল</option>
+                <option value="সংক্ষিপ্ত">সংক্ষিপ্ত</option>
+                <option value="এমসিকিউ">এমসিকিউ</option>
+            </select>
+        </div>
+        <div id="listArea"></div>
+    </div>
+</div>
 
-        function showSection(id) {
-            document.getElementById('studentView').classList.add('hidden');
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById(id).classList.remove('hidden');
+<div class="footer-bar" id="footer" style="display:none">
+    <span>নির্বাচিত: <span id="count">0</span> টি</span>
+    <button class="btn-action" onclick="makePDF()">📥 PDF ডাউনলোড করুন</button>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('smart_qb')) || [];
+    let classes = [...new Set(db.map(q => q.className))];
+    let subjects = [...new Set(db.map(q => q.subject))];
+
+    function updateLists() {
+        const cList = document.getElementById('classList');
+        const sList = document.getElementById('subjectList');
+        const fClass = document.getElementById('filterClass');
+
+        cList.innerHTML = classes.map(c => `<option value="${c}">`).join('');
+        sList.innerHTML = subjects.map(s => `<option value="${s}">`).join('');
+        
+        let filterHtml = '<option value="">সকল শ্রেণী</option>';
+        classes.forEach(c => filterHtml += `<option value="${c}">${c}</option>`);
+        fClass.innerHTML = filterHtml;
+    }
+
+    function doPreview() {
+        const val = document.getElementById('mainInput').value;
+        const box = document.getElementById('livePreview');
+        box.innerHTML = val || "প্রিভিউ এখানে দেখা যাবে...";
+        
+        // MathJax রেন্ডারিং
+        if(window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([box]).catch((err) => console.log(err));
+        }
+    }
+
+    function showTab(tab) {
+        document.getElementById('adminTab').style.display = tab === 'admin' ? 'block' : 'none';
+        document.getElementById('userTab').style.display = tab === 'user' ? 'block' : 'none';
+        document.getElementById('footer').style.display = tab === 'user' ? 'flex' : 'none';
+        document.getElementById('adminBtn').classList.toggle('active', tab === 'admin');
+        document.getElementById('userBtn').classList.toggle('active', tab === 'user');
+        if(tab === 'user') renderQuestions();
+        updateLists();
+    }
+
+    function saveData() {
+        const id = document.getElementById('editId').value;
+        const className = document.getElementById('classInput').value.trim();
+        const subject = document.getElementById('subjectInput').value.trim();
+        const type = document.getElementById('qType').value;
+        const text = document.getElementById('mainInput').value.trim();
+        const marks = document.getElementById('marks').value;
+
+        if(!className || !text) return alert("শ্রেণী ও প্রশ্ন অবশ্যই দিতে হবে!");
+
+        const data = { id: id ? parseInt(id) : Date.now(), className, subject, type, text, marks };
+
+        if(id) {
+            const idx = db.findIndex(q => q.id == id);
+            db[idx] = data;
+        } else {
+            db.push(data);
         }
 
-        function adminLogin() {
-            if (document.getElementById('adminPass').value === "Muktarul248") {
-                showSection('adminPanel');
-                renderTable('All');
-            } else { alert("ভুল পাসওয়ার্ড!"); }
+        localStorage.setItem('smart_qb', JSON.stringify(db));
+        
+        if(!classes.includes(className)) classes.push(className);
+        if(!subjects.includes(subject)) subjects.push(subject);
+
+        resetForm();
+        alert("সফলভাবে সংরক্ষিত হয়েছে!");
+    }
+
+    function resetForm() {
+        document.getElementById('editId').value = '';
+        document.getElementById('mainInput').value = '';
+        document.getElementById('marks').value = '';
+        document.getElementById('livePreview').innerHTML = 'প্রিভিউ এখানে দেখা যাবে...';
+        document.getElementById('title').innerText = "📝 নতুন প্রশ্ন যোগ করুন";
+        document.getElementById('saveBtn').innerText = "💾 ডাটা সেভ করুন";
+    }
+
+    function renderQuestions() {
+        const area = document.getElementById('listArea');
+        const fClass = document.getElementById('filterClass').value;
+        const fType = document.getElementById('filterType').value;
+        
+        let filtered = db.filter(q => {
+            return (fClass === '' || q.className === fClass) && (fType === '' || q.type === fType);
+        });
+
+        area.innerHTML = filtered.map(q => `
+            <div class="q-card">
+                <input type="checkbox" class="sel-q" value="${q.id}" onchange="updateCount()" style="width:20px">
+                <div style="flex:1">
+                    <span class="badge">${q.className}</span>
+                    <span class="badge" style="background:#e0e7ff">${q.subject}</span>
+                    <span class="badge badge-type">${q.type}</span>
+                    <div class="q-text-content" style="margin-top:10px; font-size:18px">${q.text}</div>
+                </div>
+                <div>
+                    <span class="btn-edit" onclick="editQ(${q.id})">✏️</span>
+                    <span class="btn-delete" onclick="deleteQ(${q.id})">🗑️</span>
+                </div>
+            </div>
+        `).join('');
+
+        // লিস্টের ভেতরের ম্যাথ রেন্ডারিং
+        if(window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([area]).catch((err) => console.log(err));
         }
+    }
 
-        function saveStudent() {
-            const name = document.getElementById('stdName').value;
-            const roll = document.getElementById('stdRoll').value;
-            const sClass = document.getElementById('stdClass').value;
-            const batch = document.getElementById('stdBatch').value;
-            const phone = document.getElementById('stdPhone').value;
-            const result = document.getElementById('stdResult').value;
-            const editIndex = parseInt(document.getElementById('editIndex').value);
-
-            if(!name || !roll || !phone) return alert("নাম, রোল এবং ফোন নম্বর দিতে হবে!");
-
-            let data = JSON.parse(localStorage.getItem('math_care_final') || "[]");
-
-            // ডুপ্লিকেট রোল চেক (এডিট মোড না থাকলে)
-            if (editIndex === -1) {
-                const exists = data.some(s => s.roll === roll && s.sClass === sClass);
-                if (exists) {
-                    alert(`দুঃখিত! ${sClass} শ্রেণীতে রোল ${roll} ইতিমধ্যে এন্ট্রি করা আছে।`);
-                    return;
-                }
-                data.push({ name, roll, sClass, batch, phone, result });
-            } else {
-                data[editIndex] = { name, roll, sClass, batch, phone, result };
-            }
-
-            localStorage.setItem('math_care_final', JSON.stringify(data));
-            resetForm();
-            renderTable(currentFilter);
-            alert("সফলভাবে সেভ হয়েছে!");
+    function deleteQ(id) {
+        if(confirm("ডিলিট করতে চান?")) {
+            db = db.filter(q => q.id != id);
+            localStorage.setItem('smart_qb', JSON.stringify(db));
+            renderQuestions();
         }
+    }
 
-        function renderTable(filter) {
-            currentFilter = filter;
-            const data = JSON.parse(localStorage.getItem('math_care_final') || "[]");
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '';
+    function editQ(id) {
+        const q = db.find(item => item.id == id);
+        document.getElementById('editId').value = q.id;
+        document.getElementById('classInput').value = q.className;
+        document.getElementById('subjectInput').value = q.subject;
+        document.getElementById('qType').value = q.type;
+        document.getElementById('mainInput').value = q.text;
+        document.getElementById('marks').value = q.marks;
+        document.getElementById('title').innerText = "🔄 প্রশ্ন আপডেট করুন";
+        document.getElementById('saveBtn').innerText = "আপডেট করুন";
+        showTab('admin');
+        setTimeout(doPreview, 100);
+    }
 
-            data.forEach((s, index) => {
-                if (filter === 'All' || s.sClass === filter) {
-                    tbody.innerHTML += `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3 font-bold">${s.roll}</td>
-                            <td class="p-3">${s.name}</td>
-                            <td class="p-3">${s.sClass}</td>
-                            <td class="p-3 text-green-600 font-bold">${s.result || '...'}</td>
-                            <td class="p-3 text-center space-x-1">
-                                <button onclick="sendSms('${s.phone}')" class="bg-green-500 text-white px-2 py-1 rounded text-xs">SMS</button>
-                                <button onclick="editStudent(${index})" class="text-blue-600 font-bold text-xs">এডিট</button>
-                                <button onclick="deleteData(${index})" class="text-red-500 text-xs">মুছুন</button>
-                            </td>
-                        </tr>`;
-                }
-            });
-        }
+    function updateCount() {
+        document.getElementById('count').innerText = document.querySelectorAll('.sel-q:checked').length;
+    }
 
-        function sendSms(phone) {
-            const msg = document.getElementById('noticeMsg').value;
-            if(!msg) return alert("নোটিশ বক্সে মেসেজ লিখুন!");
-            window.open(`https://wa.me/88${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
+    function makePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const selected = Array.from(document.querySelectorAll('.sel-q:checked')).map(cb => db.find(q => q.id == cb.value));
 
-        function editStudent(index) {
-            const data = JSON.parse(localStorage.getItem('math_care_final'));
-            const s = data[index];
-            document.getElementById('stdName').value = s.name;
-            document.getElementById('stdRoll').value = s.roll;
-            document.getElementById('stdClass').value = s.sClass;
-            document.getElementById('stdBatch').value = s.batch;
-            document.getElementById('stdPhone').value = s.phone;
-            document.getElementById('stdResult').value = s.result;
-            document.getElementById('editIndex').value = index;
-            document.getElementById('formTitle').innerText = "তথ্য পরিবর্তন করুন";
-            document.getElementById('saveBtn').innerText = "আপডেট";
-            document.getElementById('saveBtn').classList.replace('bg-indigo-600', 'bg-orange-500');
-            document.getElementById('cancelEdit').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        if(selected.length === 0) return alert("প্রশ্ন সিলেক্ট করুন!");
 
-        function resetForm() {
-            document.getElementById('stdName').value = '';
-            document.getElementById('stdRoll').value = '';
-            document.getElementById('stdPhone').value = '';
-            document.getElementById('stdResult').value = '';
-            document.getElementById('editIndex').value = '-1';
-            document.getElementById('formTitle').innerText = "নতুন ছাত্রছাত্রী যোগ করুন";
-            document.getElementById('saveBtn').innerText = "সেভ করুন";
-            document.getElementById('saveBtn').classList.replace('bg-orange-500', 'bg-indigo-600');
-            document.getElementById('cancelEdit').classList.add('hidden');
-        }
+        doc.text("Question Paper", 105, 20, {align:'center'});
+        
+        let y = 40;
+        selected.forEach((q, i) => {
+            // নোট: PDF-এ সরাসরি ম্যাথ ইকুয়েশন টেক্সট হিসেবে আসবে
+            const line = `${i+1}. [${q.type}] ${q.text} (Marks: ${q.marks || 0})`;
+            const textLines = doc.splitTextToSize(line, 170);
+            doc.text(textLines, 20, y);
+            y += (textLines.length * 7) + 5;
+            if(y > 270) { doc.addPage(); y = 20; }
+        });
 
-        function filterClass(cls) { renderTable(cls); }
+        doc.save("Question_Paper.pdf");
+    }
 
-        function deleteData(index) {
-            if(confirm("মুছে ফেলতে চান?")) {
-                let data = JSON.parse(localStorage.getItem('math_care_final'));
-                data.splice(index, 1);
-                localStorage.setItem('math_care_final', JSON.stringify(data));
-                renderTable(currentFilter);
-            }
-        }
+    window.onload = () => {
+        updateLists();
+        if(db.length > 0) renderQuestions();
+    };
+</script>
 
-        function checkResult() {
-            const roll = document.getElementById('searchRoll').value;
-            const cls = document.getElementById('searchClass').value;
-            if(!roll || !cls) return alert("শ্রেণী ও রোল দুটিই দিন!");
-
-           const data = JSON.parse(localStorage.getItem('math_care_final') || "[]");
-            const student = data.find(s => s.roll === roll && s.sClass === cls);
-            const display = document.getElementById('resultDisplay');
-
-            if (student) {
-                display.classList.remove('hidden');
-                display.innerHTML = `
-                    <p class="text-lg"><b>নাম:</b> ${student.name}</p>
-                    <p><b>শ্রেণী:</b> ${student.sClass} | <b>ব্যাচ:</b> ${student.batch}</p>
-                    <hr class="my-2">
-                    <p class="text-xl text-indigo-700 font-bold">ফলাফল: ${student.result || 'শীঘ্রই আসছে'}</p>`;
-            } else { alert("কোনো তথ্য পাওয়া যায়নি!"); }
-        }
-    </script>
 </body>
 </html>
